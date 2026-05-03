@@ -61,16 +61,18 @@ Copy the output into `JWT_SECRET`.
    referrer restrictions to include the production domain.
 
 ## 8. First content & verification
-- Visit `/` — splash screen → Indonesia map centered on Bali, list of seeded
-  spots loads.
+- Visit `/` — splash screen → map centered on Bali, list of seeded spots loads
+  (24 Indonesia + 12 Malaysia).
 - Click a spot — detail panel opens with photos, Google Maps deep link.
-- Switch language to `id` — UI flips to Bahasa, spot names/descriptions reload.
+- Switch language: `id` → Bahasa Indonesia, `ms` → Bahasa Melayu, `ar` → page
+  flips to right-to-left layout. Spot names/descriptions reload.
+- Region filter → groups Indonesia 🇮🇩 and Malaysia 🇲🇾 separately.
 - Sign in with Google — your name appears top-right.
 - Bookmark a spot to "Want to Visit" — toggle persists across reloads.
-- AI Planner → pick 2-3 spots, generate plan → expect a multi-day Indonesia
-  itinerary with IDR pricing.
+- AI Planner → pick 2-3 spots from one or both countries → expect a cross-border
+  itinerary with IDR / MYR pricing and inter-island/cross-border transport.
 - Toggle Travel Settings → "Local Resident" → re-open Tips: visa/SIM sections
-  disappear, Indonesia-only payment tips appear.
+  disappear, IDR/MYR-only payment tips appear.
 
 ## 9. Operating cadence
 - New spots are submitted through the in-app "Share a Spot" button (creates

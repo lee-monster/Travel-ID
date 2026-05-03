@@ -2,22 +2,24 @@
 
 ## Project Overview
 Travel-ID (`travel-id.kr` — placeholder until domain decision) is a community-driven
-travel guide for Indonesia, serving **both** international visitors AND Indonesian
-residents (domestic travelers). Forked & adapted from TravelKo (travel.koinfo.kr)
-on 2026-05-03.
+travel guide for **Indonesia AND Malaysia**, serving both international visitors
+AND local residents (domestic travelers) of either country. Forked & adapted from
+TravelKo (travel.koinfo.kr) on 2026-05-03; expanded to Malaysia + Arabic on 2026-05-03.
 
-The two audiences receive subtly different UX:
-- International visitors get visa, SIM, currency, and embassy info; pricing in IDR
+Two audiences with subtly different UX:
+- International visitors get visa, SIM, currency, and embassy info; pricing in IDR/MYR
   with USD context.
-- Local residents (`prefs.visitType === 'local'`) get IDR-only pricing, KAI train and
-  Pelni ferry options surfaced over flights, e-wallet (GoPay/OVO/DANA) payment hints.
+- Local residents (`prefs.visitType === 'local'`) get local-currency-only pricing
+  (IDR or MYR), KAI/Pelni (ID) and KTM ETS / KLIA Ekspres (MY) surfaced over flights,
+  e-wallet payment hints (GoPay/OVO/DANA in ID; Touch'n Go eWallet/GrabPay/Boost in MY).
 
 ## Architecture
 - **SPA**: single `index.html` + `js/travel-app.js` (no framework)
-- **5 languages**: en (default), id (peer language for locals), ko, zh, ja
+- **7 languages**: en (default), id, ms (peer languages for locals), ko, zh, ja, ar (RTL)
 - **Vercel Serverless**: API endpoints in `/api/*` (Notion-backed)
-- **Single map provider**: Google Maps only (Naver Maps does not cover Indonesia)
+- **Single map provider**: Google Maps only (Naver Maps does not cover ID/MY)
 - **Auth**: Google OAuth → Travel-ID issues HS256 JWT (no Supabase)
+- **RTL**: `<html dir="rtl">` + `body.rtl` class auto-applied when `ar` is selected
 
 ## Tech Stack
 - Vanilla HTML/CSS/JS
@@ -76,14 +78,18 @@ Parent page: <https://www.notion.so/355722c54b8881548b33fa2f1417ba1d>
 ### Travel-ID Spots (`10e3dd6ce89841e98a211c5ac4fd2449`)
 Multi-language spot catalog. Property highlights:
 - Title: `Name` (English canonical)
-- Multi-lang names: `Name_id`, `Name_ko`, `Name_zh`, `Name_ja`
-- Multi-lang descriptions: `Description`, `Description_id`, `Description_ko`, `Description_zh`, `Description_ja`
+- Multi-lang names: `Name_id`, `Name_ms`, `Name_ko`, `Name_zh`, `Name_ja`, `Name_ar`
+- Multi-lang descriptions: `Description`, `Description_id`, `Description_ms`, `Description_ko`, `Description_zh`, `Description_ja`, `Description_ar`
 - `Category` (select): beach, temple, cultural, volcano, nature, diving, food, cafe, shopping, nightlife, mosque, museum, adventure, wellness
-- `Region` (select): Bali, Jakarta, Yogyakarta, Bandung, Lombok, Komodo, Surabaya, Medan, Bromo, Borobudur, Raja Ampat, Sumatra, Sulawesi, Kalimantan, Other
+- `Region` (select):
+  - **Indonesia**: Bali, Jakarta, Yogyakarta, Bandung, Lombok, Komodo, Surabaya, Medan, Bromo, Borobudur, Raja Ampat, Sumatra, Sulawesi, Kalimantan
+  - **Malaysia**: Kuala Lumpur, Penang, Langkawi, Melaka, Sabah, Sarawak, Cameron Highlands, Johor Bahru, Ipoh, Putrajaya
 - Coordinates: `Latitude`, `Longitude`
-- Indonesia-specific: `Halal` (checkbox), `PrayerRoom` (checkbox), `VegFriendly`, `EntryFeeIDR`, `BestTimeToVisit` (select), `LocalTips` (text)
+- Halal/Muslim fields: `Halal` (checkbox), `PrayerRoom` (checkbox; covers musholla in ID & surau in MY), `VegFriendly`
+- Pricing: `EntryFeeIDR` (number — labeled IDR but reused for MYR by convention; UI shows currency from Region)
+- Other: `BestTimeToVisit` (select), `LocalTips` (text), `OpeningHours`, `Tags` (multi_select)
 - Publish gate: `Published` (checkbox; spots are invisible until set true)
-- 24 seed spots across all major regions already loaded
+- 36 seed spots loaded: 24 Indonesia + 12 Malaysia, across every region
 
 ### Travel-ID Users (`d4a523eeebae48eb868a61259ec1d98d`)
 Title `Email`, plus `GoogleId`, `Name`, `Picture`, `Locale`, `Bookmarks` (JSON), `Plans` (JSON; doubles as planner usage tracker).
@@ -100,21 +106,33 @@ Title `ShareId` (8-hex). `PlanTitle`, `Days`, `Budget`, `Style`, `Lang`, `SpotNa
    `Authorization: Bearer …` on subsequent calls.
 
 ## AI Planner notes
-- Prompt is **island-aware** — Indonesia spans 5,000 km, so the planner is told
-  to group spots by ISLAND first to avoid impossible same-day routes.
+- Prompt is **island/peninsula-aware** — Indonesia + Malaysia together span 5,000+ km
+  with both archipelagos and a peninsula. The planner is told to group spots by
+  ISLAND/PENINSULA first to avoid impossible same-day routes.
+- Cross-border ID↔MY: prompt includes flight pricing (KL↔Jakarta, KL↔Bali, Penang↔Medan).
 - `visitType === 'local'` produces a domestic-traveler plan: no visa/SIM/currency,
-  IDR-only pricing, KAI/Pelni preferred over flights, GoPay/OVO/DANA payment hints.
-- Reference transport prices (flight/ferry/KAI/Whoosh HSR/Grab/scooter) are
-  embedded in the system prompt — refresh annually.
+  local-currency-only pricing (IDR or MYR), KAI/Pelni (ID) or KTM ETS / KLIA Ekspres
+  (MY) preferred over flights, e-wallet payment hints in both currencies.
+- `respondLang === 'ar'`: planner generates the entire itinerary in Modern Standard
+  Arabic; markdown renders RTL automatically when paired with `<html dir="rtl">`.
+- Reference transport prices (ID flights/ferry/KAI/Whoosh HSR; MY KTM ETS/KLIA
+  Ekspres/AirAsia/Grab) are embedded in the system prompt — refresh annually.
 - Daily rate-limit: 20 plans/user; usage state piggybacks on `Plans` rich_text in
   the Notion Users row.
 
 ## Languages
-- User-facing: choose dynamically (URL `?lang=` > localStorage > browser lang +
-  Asia/Jakarta timezone heuristic > English).
+- User-facing: choose dynamically. Resolution order:
+  1. URL `?lang=`
+  2. localStorage (`travelid_lang`)
+  3. Browser `navigator.language` (collapses `zh-*` → zh, `ar-*` → ar)
+  4. Timezone heuristic: Asia/Jakarta family → id; Asia/Kuala_Lumpur / Asia/Kuching → ms
+  5. English fallback
+- RTL: when `ar` is selected, `<html dir="rtl">` and `body.rtl` are set; CSS overrides
+  in `css/travel-app.css` (search "RTL Support") flip layout where needed. Map controls
+  stay LTR (Google Maps native chrome doesn't honor dir reliably).
 - Code comments: English.
 - Commit messages: English.
-- All five language strings live in `sites/travel/lang.js` — keep them in sync
+- All seven language strings live in `sites/travel/lang.js` — keep them in sync
   when adding a new key.
 
 ## Workflow: Session Start Protocol

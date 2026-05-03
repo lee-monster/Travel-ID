@@ -1,10 +1,11 @@
 # Travel-ID
 
-> Discover Indonesia, Beyond Bali — for international tourists and Indonesian residents alike.
+> Discover Indonesia & Malaysia — for international tourists and local residents alike.
 
-Community-driven travel guide for Indonesia. Bali, Yogyakarta, Komodo, Bromo,
-Raja Ampat — with halal/prayer-room info, AI trip planning, and an interactive
-Google Map. Five languages: English, Bahasa Indonesia, 한국어, 中文, 日本語.
+Community-driven travel guide for Indonesia and Malaysia. Bali, Yogyakarta, Komodo,
+Bromo, Kuala Lumpur, Penang, Langkawi, Borneo — with halal / prayer-room info, AI
+trip planning, and an interactive Google Map. Seven languages: English, Bahasa
+Indonesia, Bahasa Melayu, 한국어, 中文, 日本語, العربية (RTL).
 
 ## Stack
 - Vanilla HTML / CSS / JS (no framework, no build step)

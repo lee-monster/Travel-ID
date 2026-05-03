@@ -3,14 +3,18 @@
 const { notion, SPOTS_DB } = require('./_lib/notion');
 
 const BASE_URL = 'https://travel-id.kr';
-const LANGS = ['en', 'id', 'ko', 'zh', 'ja'];
+const LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
 const CATEGORIES = [
   'beach','temple','cultural','volcano','nature','diving',
   'food','cafe','shopping','nightlife','museum','adventure','wellness',
 ];
 const REGIONS = [
+  // Indonesia
   'Bali','Jakarta','Yogyakarta','Bandung','Lombok','Komodo','Bromo',
   'Borobudur','Surabaya','Medan','Raja Ampat','Sumatra','Sulawesi','Kalimantan',
+  // Malaysia
+  'Kuala Lumpur','Penang','Langkawi','Melaka','Sabah','Sarawak',
+  'Cameron Highlands','Johor Bahru','Ipoh','Putrajaya',
 ];
 
 function escXml(str) {

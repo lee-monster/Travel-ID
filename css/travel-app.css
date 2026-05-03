@@ -1201,3 +1201,31 @@ body {
 }
 .ta-guide-dismiss-btn:hover { background: var(--t-gray-50); }
 .ta-guide-dismiss-today { border-color: var(--t-primary-light); color: var(--t-primary); }
+
+/* ============================================================ */
+/* RTL Support — applied when <html dir="rtl"> + body.rtl set    */
+/* (Currently active only for Arabic.)                            */
+/* ============================================================ */
+[dir="rtl"] body { font-family: 'Noto Sans Arabic', 'Tajawal', 'Cairo', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+[dir="rtl"] .ta-search-icon { left: auto; right: 16px; }
+[dir="rtl"] .ta-search { padding-left: 14px; padding-right: 38px; text-align: right; }
+[dir="rtl"] .ta-cat-row { flex-direction: row-reverse; }
+[dir="rtl"] .ta-modal-close { left: 12px; right: auto; }
+[dir="rtl"] .ta-detail-back::before { content: '→'; }
+[dir="rtl"] .ta-detail-back { content: ''; }
+[dir="rtl"] .ta-myspots-tag { margin-right: 0; margin-left: 8px; }
+[dir="rtl"] .ta-spot-bookmark-badge { right: auto; left: 6px; }
+[dir="rtl"] .ta-spot-featured { float: left; }
+[dir="rtl"] .ta-prefs-dropdown { right: auto; left: 0; }
+[dir="rtl"] .ta-auth-menu { right: auto; left: 0; }
+[dir="rtl"] .ta-fab { right: auto; left: 16px; }
+[dir="rtl"] .ta-view-toggle { right: auto; left: 16px; }
+[dir="rtl"] .ta-sidebar-toggle svg { transform: scaleX(-1); }
+[dir="rtl"] .ta-tips-list { padding-right: 20px; padding-left: 0; }
+[dir="rtl"] .ta-tips-table td:first-child { font-weight: 600; }
+[dir="rtl"] .ta-form-actions { flex-direction: row-reverse; }
+[dir="rtl"] .ta-spot-card { text-align: right; }
+[dir="rtl"] .ta-detail-body { text-align: right; }
+/* Map controls keep LTR (Google Maps native chrome doesn't honor dir reliably). */
+[dir="rtl"] #ta-map { direction: ltr; }
+[dir="rtl"] .ta-map-type { direction: ltr; }

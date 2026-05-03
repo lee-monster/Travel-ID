@@ -5,25 +5,33 @@
   'use strict';
 
   // === Resolve initial language from URL > localStorage > default ===
-  // Travel-ID supports both inbound tourists and Indonesian residents,
-  // so we treat Bahasa Indonesia as a peer language (not just a translation).
-  var SUPPORTED_LANGS = ['en', 'id', 'ko', 'zh', 'ja'];
+  // Travel-ID covers Indonesia + Malaysia and serves both international visitors
+  // and local residents, so id (Bahasa Indonesia) and ms (Bahasa Melayu) are
+  // first-class peer languages — not just translation targets.
+  var SUPPORTED_LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
+  var RTL_LANGS = ['ar'];
+  function isRtl(lang) { return RTL_LANGS.indexOf(lang) !== -1; }
+
   function resolveInitialLang() {
     var urlLang = new URLSearchParams(window.location.search).get('lang');
     if (urlLang && SUPPORTED_LANGS.indexOf(urlLang) !== -1) return urlLang;
     var stored = localStorage.getItem('travelid_lang');
     if (stored && SUPPORTED_LANGS.indexOf(stored) !== -1) return stored;
-    // Auto-detect from browser language. Map zh-* / zh-Hans / zh-CN / zh-TW all to 'zh'.
+    // Auto-detect from browser language. Collapse zh-* / zh-Hans / zh-CN / zh-TW → 'zh',
+    // and ar-* (ar-SA, ar-AE, ar-EG, ...) → 'ar'.
     var nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
     var primary = nav.split('-')[0];
     if (primary === 'zh') return 'zh';
+    if (primary === 'ar') return 'ar';
     if (SUPPORTED_LANGS.indexOf(primary) !== -1) return primary;
-    // Indonesian browsers may report 'in' (legacy) instead of 'id' — Java still uses this code.
+    // Indonesian browsers may report 'in' (legacy ISO 639-1 alias).
     if (primary === 'in') return 'id';
-    // Heuristic: if Asia/Jakarta / Asia/Makassar / Asia/Jayapura timezone, default to id.
+    // Timezone heuristic: pick id for Indonesia, ms for Malaysia.
     try {
       var tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-      if (tz.indexOf('asia/jakarta') !== -1 || tz.indexOf('asia/makassar') !== -1 || tz.indexOf('asia/jayapura') !== -1 || tz.indexOf('asia/pontianak') !== -1) return 'id';
+      if (tz.indexOf('asia/jakarta') !== -1 || tz.indexOf('asia/makassar') !== -1 ||
+          tz.indexOf('asia/jayapura') !== -1 || tz.indexOf('asia/pontianak') !== -1) return 'id';
+      if (tz.indexOf('asia/kuala_lumpur') !== -1 || tz.indexOf('asia/kuching') !== -1) return 'ms';
     } catch (e) {}
     return 'en';
   }
@@ -263,7 +271,11 @@
     if (ogDesc) ogDesc.content = langData['seo.description'] || '';
 
     // og:locale
-    var localeMap = { en: 'en_US', id: 'id_ID', ko: 'ko_KR', zh: 'zh_CN', ja: 'ja_JP' };
+    var localeMap = { en: 'en_US', id: 'id_ID', ms: 'ms_MY', ko: 'ko_KR', zh: 'zh_CN', ja: 'ja_JP', ar: 'ar_SA' };
+
+    // RTL toggle for Arabic. Body class lets CSS apply directional overrides.
+    document.documentElement.dir = isRtl(lang) ? 'rtl' : 'ltr';
+    document.body.classList.toggle('rtl', isRtl(lang));
     var ogLocale = document.querySelector('meta[property="og:locale"]');
     if (ogLocale) ogLocale.content = localeMap[lang] || 'en_US';
 

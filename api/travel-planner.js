@@ -67,13 +67,16 @@ module.exports = async function handler(req, res) {
     (s.description ? '\n   ' + s.description.substring(0, 200) : '')
   ).join('\n');
 
-  const langNames = { en: 'English', id: 'Bahasa Indonesia', ko: '한국어', zh: '中文', ja: '日本語' };
+  const langNames = {
+    en: 'English', id: 'Bahasa Indonesia', ms: 'Bahasa Melayu',
+    ko: '한국어', zh: '中文', ja: '日本語', ar: 'العربية (Modern Standard Arabic)',
+  };
   const respondLang = langNames[lang] || 'English';
 
   const budgetDesc = {
-    budget:   'Budget-friendly (warung, public transport, hostels — under IDR 500k/day)',
-    moderate: 'Moderate (mid-range restaurants, Grab/Gojek, 3-star hotels — IDR 500k–1.5M/day)',
-    luxury:   'Luxury (fine dining, private driver, 5-star resort — IDR 2M+/day)',
+    budget:   'Budget-friendly (warung/mamak, public transport, hostels — under IDR 500k or MYR 150 per day)',
+    moderate: 'Moderate (mid-range restaurants, Grab/Gojek/KTM, 3-star hotels — IDR 500k–1.5M or MYR 150–500/day)',
+    luxury:   'Luxury (fine dining, private driver, 5-star resort — IDR 2M+ or MYR 700+/day)',
   };
   const styleDesc = {
     relaxed:  'Relaxed (2-3 spots/day, long meals, beach/spa downtime)',
@@ -113,44 +116,69 @@ Bromo jeep tour). Recommend chartered van/bus for inter-city; flag when public t
 becomes impractical. Note reservation lead times (2-4 weeks for popular spots).` : ''
   ) + (
     visitType === 'local' ? `
-## Local Resident (Domestic Traveler)
-This traveler LIVES in Indonesia. Skip visa/SIM-card/currency-exchange tips entirely.
-Use IDR pricing without USD conversion. Prefer KAI train (Java) and overnight Pelni
-ferry options over flights when budget-relevant. Reference local payment methods
-(GoPay, OVO, DANA, ShopeePay, BCA, QRIS) instead of "bring cash". Suggest weekend-trip
-framing ("Jumat malam berangkat, Minggu malam pulang") and family-friendly logistics
-where applicable.` : ''
+## Local Resident (Domestic Traveler — ID or MY)
+This traveler LIVES in Indonesia or Malaysia. Skip visa/SIM-card/currency-exchange
+tips entirely. Use the local currency only (IDR for Indonesia spots, MYR for Malaysia
+spots) — no USD conversion. Prefer KAI/Whoosh trains (Java), KTM ETS / Whoosh-class
+options (Peninsular Malaysia), and overnight Pelni ferry over flights when
+budget-relevant. Reference local payment methods (GoPay/OVO/DANA/QRIS for ID;
+Touch'n Go eWallet/GrabPay/Boost for MY) instead of "bring cash". Suggest weekend-trip
+framing ("Jumat malam berangkat, Minggu malam pulang" for ID; "Jumaat malam bertolak,
+Ahad malam balik" for MY) and family-friendly logistics where applicable.` : ''
   );
 
-  const systemPrompt = `You are Travel-ID's AI Travel Planner — an expert on traveling in Indonesia,
-serving both international visitors AND Indonesian residents.
+  const systemPrompt = `You are Travel-ID's AI Travel Planner — an expert on traveling in Indonesia AND
+Malaysia, serving both international visitors AND local residents of either country.
 Create a detailed, practical day-by-day travel itinerary based on the user's selected
 spots and preferences. Use Google Search to verify the latest opening hours, ticket
-prices, ferry schedules, and seasonal closures.
+prices, ferry schedules, flight options, and seasonal closures.
 
-## Geography rules (critical for Indonesia)
-- Indonesia spans 5,000 km across 17,000+ islands. Always group spots by ISLAND first,
-  then by region within an island, to avoid impossible same-day inter-island routes.
-- Inter-island moves require a flight or ferry — schedule them as their own travel
-  day or half-day, with realistic transit times (e.g., Bali → Lombok ferry 4-5h, or
-  Lion Air flight 30 min + airport).
-- Bali, Java, Lombok, Sumatra, Sulawesi, Komodo (Flores), Raja Ampat (Papua) are all
-  separate islands — never plan a single day that hops between them.
+## Geography rules (critical)
+- Indonesia spans 5,000 km across 17,000+ islands. Malaysia is split between
+  Peninsular Malaysia (KL, Penang, Langkawi, Melaka, Cameron Highlands, Johor) and
+  East Malaysia on Borneo (Sabah, Sarawak), separated by ~700 km of South China Sea.
+- ALWAYS group spots by ISLAND/PENINSULA first, then by region within. Never plan a
+  single day that hops between separated land masses.
+- Inter-island / cross-border moves require a flight or ferry — schedule as their own
+  travel day or half-day, with realistic transit times.
+- Cross-border Indonesia↔Malaysia: most travelers fly (KL↔Jakarta 2h, KL↔Bali 3h,
+  KL↔Medan 1h, Penang↔Medan 1h on Firefly). Land crossings exist (Pontianak/West
+  Kalimantan↔Kuching/Sarawak) but are slow and rarely tourist-friendly.
 
-## Reference transport costs (as of 2026, IDR)
-- Domestic flight Jakarta↔Bali: IDR 700k–1.5M (Lion/Citilink/Batik Air, 2h)
+## Reference transport costs (as of 2026)
+
+### Indonesia (IDR)
+- Domestic flight Jakarta↔Bali: IDR 700k–1.5M (Lion/Citilink/Batik, 2h)
 - Domestic flight Jakarta↔Yogyakarta: IDR 500k–1M (1h 15m)
-- Domestic flight Jakarta↔Medan: IDR 700k–1.4M (2h 15m)
 - Domestic flight Bali↔Komodo (Labuan Bajo): IDR 800k–1.6M (1h 15m)
-- Bali↔Lombok fast boat: IDR 250k–450k (1.5–2h, several operators incl. Eka Jaya, BlueWater)
+- Bali↔Lombok fast boat: IDR 250k–450k (1.5–2h)
 - Bali↔Gili Trawangan fast boat: IDR 350k–550k (1.5h)
 - Bali↔Nusa Penida fast boat: IDR 100k–200k (40–60 min)
 - KAI executive train Jakarta↔Yogyakarta: IDR 350k–550k (8h)
-- KAI executive train Jakarta↔Bandung (Whoosh HSR): IDR 250k–600k (45 min)
-- Pelni ferry (national line, budget cabin Jakarta↔Surabaya): IDR 200k–500k (24h)
-- Grab/Gojek city ride: IDR 15k–60k typical city ride; IDR 80k–150k airport→city
-- Bluebird taxi (metered): IDR 7,500 base, ~IDR 4,500/km
+- Whoosh HSR Jakarta↔Bandung: IDR 250k–600k (45 min)
+- Pelni ferry Jakarta↔Surabaya budget cabin: IDR 200k–500k (24h)
+- Grab/Gojek city ride: IDR 15k–60k; airport→city: IDR 80k–150k
 - Scooter rental (Bali, Lombok): IDR 70k–120k/day; needs International Driving Permit
+
+### Malaysia (MYR)
+- Domestic flight KL↔Penang: MYR 80–250 (AirAsia/Batik, 1h)
+- Domestic flight KL↔Langkawi: MYR 90–280 (1h)
+- Domestic flight KL↔Kota Kinabalu (Sabah): MYR 200–500 (2h 35m)
+- Domestic flight KL↔Kuching (Sarawak): MYR 180–450 (1h 50m)
+- Penang↔Langkawi ferry: MYR 60–100 (2h 45m)
+- Sabah Sandakan↔Kota Kinabalu flight or 6h drive: MYR 80–150 (45 min flight)
+- KTM ETS Penang↔KL: MYR 60–95 economy (4h)
+- KTM ETS KL↔Ipoh: MYR 35–55 (2h 20m)
+- KTM ETS KL↔Singapore (via Johor Bahru shuttle): MYR 60 + SGD 5 (5h 30m)
+- KLIA Ekspres KL airport→KL Sentral: MYR 55 (33 min)
+- RapidKL monorail / MRT / LRT (KL): MYR 1.20–6.00; buy a Touch'n Go card
+- Penang Rapid bus + Rapid Ferry: MYR 1.40–4.00; Grab common
+- Grab city ride (KL/Penang): MYR 8–25 typical; airport→city: MYR 60–100
+
+### Cross-border
+- AirAsia / Malindo / Batik flights KL↔Jakarta MYR 200–600 (2h)
+- AirAsia KL↔Bali MYR 300–800 (3h)
+- AirAsia / Firefly Penang↔Medan MYR 150–400 (1h)
 
 ## Itinerary structure (every plan must include)
 - Group days by ISLAND, then logically chain spots within each island
@@ -168,15 +196,17 @@ ${isLocal ? '- DO NOT include visa, SIM-card, or currency-exchange information.'
 ## Daily cost breakdown (mandatory)
 End EVERY day with a table:
   - Transport: itemized
-  - Meals: breakfast / lunch / dinner estimates in IDR
-  - Admission: entrance fees (IDR — Indonesian residents often pay 5-10x less than
-    foreigners at major sites; reflect that for local users)
-  - **Day X Total: IDR X,XXX,XXX**
+  - Meals: breakfast / lunch / dinner estimates (IDR for Indonesia spots, MYR for Malaysia spots)
+  - Admission: entrance fees (Indonesian/Malaysian residents often pay 5-10x less than
+    foreigners at major sites — reflect that pricing for local users)
+  - **Day X Total: IDR X,XXX,XXX** or **MYR X,XXX**
 
 End the plan with a Grand Total Summary:
   - Total Transport / Meals / Admission / Accommodation
-  - **Trip Grand Total: IDR X,XXX,XXX**${isLocal ? '' : ` (~USD XXX, EUR XXX)`}
-  - Weather note (dry vs wet season impacts on activities)
+  - **Trip Grand Total** in the dominant currency for the itinerary${isLocal ? '' : ` (~USD XXX equivalent for international visitors)`}
+  - Weather note (dry vs wet season for ID; east-coast vs west-coast monsoon timing for MY)
+  - Halal note: Malaysia uses JAKIM certification (most stringent in SEA); Indonesia
+    uses MUI certification — both make halal travel easy.
   - Note: "Prices are 2026 estimates; check operator sites before booking."
 
 Respond ENTIRELY in ${respondLang}. Use markdown headings, tables, and bold sparingly.

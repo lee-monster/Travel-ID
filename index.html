@@ -11,8 +11,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel-ID — Discover Indonesia | Beyond Bali Travel Guide</title>
-  <meta name="description" content="Travel-ID — Discover the best travel spots across Indonesia recommended by the community. Bali, Yogyakarta, Komodo, Bromo, Raja Ampat and more. Halal-friendly, AI trip planner.">
+  <title>Travel-ID — Discover Indonesia &amp; Malaysia | Beyond Bali &amp; KL</title>
+  <meta name="description" content="Travel-ID — Discover the best travel spots across Indonesia and Malaysia recommended by the community. Bali, Yogyakarta, Komodo, KL, Penang, Langkawi, Borneo and more. Halal-friendly, AI trip planner.">
   <meta name="theme-color" content="#E11D2E">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -22,30 +22,32 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Travel-ID — Discover Indonesia">
-  <meta property="og:description" content="Discover the best travel spots in Indonesia with an interactive map. Beach, temple, volcano, diving, halal food and more.">
+  <meta property="og:title" content="Travel-ID — Discover Indonesia &amp; Malaysia">
+  <meta property="og:description" content="Discover the best travel spots in Indonesia and Malaysia with an interactive map. Beach, temple, volcano, diving, halal food and more.">
   <meta property="og:image" content="https://travel-id.kr/images/splash.png">
   <meta property="og:url" content="https://travel-id.kr/">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="id_ID">
+  <meta property="og:locale:alternate" content="ms_MY">
   <meta property="og:locale:alternate" content="ko_KR">
   <meta property="og:locale:alternate" content="zh_CN">
   <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:locale:alternate" content="ar_SA">
   <meta property="og:site_name" content="Travel-ID">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Travel-ID — Discover Indonesia">
-  <meta name="twitter:description" content="Discover the best travel spots in Indonesia with interactive map.">
+  <meta name="twitter:title" content="Travel-ID — Discover Indonesia &amp; Malaysia">
+  <meta name="twitter:description" content="Discover the best travel spots in Indonesia and Malaysia with interactive map.">
   <meta name="twitter:image" content="https://travel-id.kr/images/splash.png">
   <link rel="canonical" id="seo-canonical" href="https://travel-id.kr/">
 
-  <!-- GEO tags for Indonesia -->
-  <meta name="geo.region" content="ID">
-  <meta name="geo.placename" content="Indonesia">
-  <meta name="geo.position" content="-2.5489;118.0149">
-  <meta name="ICBM" content="-2.5489, 118.0149">
+  <!-- GEO tags — covers both Indonesia and Malaysia (centroid placed on the Java/Sumatra/Malay Peninsula region) -->
+  <meta name="geo.region" content="ID,MY">
+  <meta name="geo.placename" content="Indonesia &amp; Malaysia">
+  <meta name="geo.position" content="0.5;108.0">
+  <meta name="ICBM" content="0.5, 108.0">
 
   <!-- Keywords -->
-  <meta name="keywords" content="Indonesia travel, Bali travel guide, Yogyakarta tour, Borobudur, Komodo dragon, Mt Bromo, Raja Ampat, Lombok, Indonesia trip planner, halal food Bali, Muslim friendly Indonesia, Indonesia attractions, Indonesia map, Java travel, wisata Indonesia, panduan wisata Bali, kuliner halal Bali, 인도네시아 여행, 발리 여행, 印尼旅游, 巴厘岛旅游, インドネシア旅行, バリ島旅行">
+  <meta name="keywords" content="Indonesia travel, Malaysia travel, Bali, Yogyakarta, Borobudur, Komodo, Mt Bromo, Raja Ampat, Lombok, Kuala Lumpur travel, Penang, Langkawi, Melaka, Sabah, Sarawak, Cameron Highlands, halal travel Southeast Asia, Muslim friendly, AI trip planner, wisata Indonesia, pelancongan Malaysia, 인도네시아 여행, 말레이시아 여행, 印尼旅游, 马来西亚旅游, インドネシア旅行, マレーシア旅行, سياحة إندونيسيا, سياحة ماليزيا">
   <meta name="author" content="Travel-ID">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -59,9 +61,9 @@
         "@id": "https://travel-id.kr/#website",
         "url": "https://travel-id.kr/",
         "name": "Travel-ID",
-        "description": "Discover the best travel spots in Indonesia recommended by the community",
+        "description": "Discover the best travel spots in Indonesia and Malaysia recommended by the community",
         "publisher": { "@id": "https://travel-id.kr/#organization" },
-        "inLanguage": ["en", "id", "ko", "zh", "ja"],
+        "inLanguage": ["en", "id", "ms", "ko", "zh", "ja", "ar"],
         "potentialAction": {
           "@type": "SearchAction",
           "target": "https://travel-id.kr/?q={search_term_string}",
@@ -74,15 +76,14 @@
         "name": "Travel-ID",
         "url": "https://travel-id.kr/",
         "logo": "https://travel-id.kr/images/main.png",
-        "description": "Community-driven Indonesia travel guide for international tourists",
-        "areaServed": {
-          "@type": "Country",
-          "name": "Indonesia",
-          "sameAs": "https://en.wikipedia.org/wiki/Indonesia"
-        },
+        "description": "Community-driven travel guide for Indonesia and Malaysia, serving both international tourists and local residents",
+        "areaServed": [
+          { "@type": "Country", "name": "Indonesia", "sameAs": "https://en.wikipedia.org/wiki/Indonesia" },
+          { "@type": "Country", "name": "Malaysia",  "sameAs": "https://en.wikipedia.org/wiki/Malaysia" }
+        ],
         "audience": {
           "@type": "Audience",
-          "audienceType": "International tourists visiting Indonesia"
+          "audienceType": "International tourists and local residents in Indonesia and Malaysia"
         }
       },
       {
@@ -173,9 +174,11 @@
           <select class="ta-lang-select" id="ta-lang-select" onchange="taSetLanguage(this.value)">
             <option value="en">English</option>
             <option value="id">Indonesia</option>
+            <option value="ms">Bahasa Melayu</option>
             <option value="ko">한국어</option>
             <option value="zh">中文</option>
             <option value="ja">日本語</option>
+            <option value="ar">العربية</option>
           </select>
           <!-- Auth: Login/Profile -->
           <div class="ta-auth" id="ta-auth">
@@ -188,9 +191,11 @@
                   <select class="ta-lang-select" id="ta-auth-lang-select" onchange="taSetLanguage(this.value)">
                     <option value="en">English</option>
                     <option value="id">Indonesia</option>
+                    <option value="ms">Bahasa Melayu</option>
                     <option value="ko">한국어</option>
                     <option value="zh">中文</option>
                     <option value="ja">日本語</option>
+                    <option value="ar">العربية</option>
                   </select>
                 </div>
                 <button onclick="taShowMySpots()" data-i18n="bookmark.mySpots">My Spots</button>
@@ -239,20 +244,34 @@
           </div>
           <select class="ta-region-select" id="ta-region-select">
             <option value="" data-i18n="app.regionAll">All Regions</option>
-            <option value="Bali" data-i18n="app.regionBali">Bali</option>
-            <option value="Jakarta" data-i18n="app.regionJakarta">Jakarta</option>
-            <option value="Yogyakarta" data-i18n="app.regionYogyakarta">Yogyakarta</option>
-            <option value="Bandung" data-i18n="app.regionBandung">Bandung</option>
-            <option value="Lombok" data-i18n="app.regionLombok">Lombok</option>
-            <option value="Komodo" data-i18n="app.regionKomodo">Komodo</option>
-            <option value="Bromo" data-i18n="app.regionBromo">Bromo</option>
-            <option value="Borobudur" data-i18n="app.regionBorobudur">Borobudur</option>
-            <option value="Surabaya" data-i18n="app.regionSurabaya">Surabaya</option>
-            <option value="Medan" data-i18n="app.regionMedan">Medan</option>
-            <option value="Raja Ampat" data-i18n="app.regionRajaAmpat">Raja Ampat</option>
-            <option value="Sumatra" data-i18n="app.regionSumatra">Sumatra</option>
-            <option value="Sulawesi" data-i18n="app.regionSulawesi">Sulawesi</option>
-            <option value="Kalimantan" data-i18n="app.regionKalimantan">Kalimantan</option>
+            <optgroup label="🇮🇩 Indonesia">
+              <option value="Bali" data-i18n="app.regionBali">Bali</option>
+              <option value="Jakarta" data-i18n="app.regionJakarta">Jakarta</option>
+              <option value="Yogyakarta" data-i18n="app.regionYogyakarta">Yogyakarta</option>
+              <option value="Bandung" data-i18n="app.regionBandung">Bandung</option>
+              <option value="Lombok" data-i18n="app.regionLombok">Lombok</option>
+              <option value="Komodo" data-i18n="app.regionKomodo">Komodo</option>
+              <option value="Bromo" data-i18n="app.regionBromo">Bromo</option>
+              <option value="Borobudur" data-i18n="app.regionBorobudur">Borobudur</option>
+              <option value="Surabaya" data-i18n="app.regionSurabaya">Surabaya</option>
+              <option value="Medan" data-i18n="app.regionMedan">Medan</option>
+              <option value="Raja Ampat" data-i18n="app.regionRajaAmpat">Raja Ampat</option>
+              <option value="Sumatra" data-i18n="app.regionSumatra">Sumatra</option>
+              <option value="Sulawesi" data-i18n="app.regionSulawesi">Sulawesi</option>
+              <option value="Kalimantan" data-i18n="app.regionKalimantan">Kalimantan</option>
+            </optgroup>
+            <optgroup label="🇲🇾 Malaysia">
+              <option value="Kuala Lumpur" data-i18n="app.regionKL">Kuala Lumpur</option>
+              <option value="Penang" data-i18n="app.regionPenang">Penang</option>
+              <option value="Langkawi" data-i18n="app.regionLangkawi">Langkawi</option>
+              <option value="Melaka" data-i18n="app.regionMelaka">Melaka</option>
+              <option value="Sabah" data-i18n="app.regionSabah">Sabah (Borneo)</option>
+              <option value="Sarawak" data-i18n="app.regionSarawak">Sarawak (Borneo)</option>
+              <option value="Cameron Highlands" data-i18n="app.regionCameron">Cameron Highlands</option>
+              <option value="Johor Bahru" data-i18n="app.regionJohor">Johor Bahru</option>
+              <option value="Ipoh" data-i18n="app.regionIpoh">Ipoh</option>
+              <option value="Putrajaya" data-i18n="app.regionPutrajaya">Putrajaya</option>
+            </optgroup>
             <option value="Other" data-i18n="app.regionOther">Other</option>
           </select>
         </div>

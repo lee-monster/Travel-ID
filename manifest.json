@@ -1,7 +1,7 @@
 {
-  "name": "Travel-ID — Indonesia Trip Planner",
+  "name": "Travel-ID — Indonesia & Malaysia Trip Planner",
   "short_name": "Travel-ID",
-  "description": "Discover the best travel spots across Indonesia, recommended by the community. Bali, Yogyakarta, Komodo, Bromo, Raja Ampat. AI-powered trip planner.",
+  "description": "Discover the best travel spots across Indonesia and Malaysia, recommended by the community. Bali, Yogyakarta, Komodo, Bromo, Kuala Lumpur, Penang, Langkawi, Borneo. AI-powered trip planner.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",

@@ -53,26 +53,32 @@ function spotFromPage(page, lang) {
   const nameByLang = {
     en: getTitle(p.Name),
     id: getRichText(p.Name_id),
+    ms: getRichText(p.Name_ms),
     ko: getRichText(p.Name_ko),
     zh: getRichText(p.Name_zh),
     ja: getRichText(p.Name_ja),
+    ar: getRichText(p.Name_ar),
   };
   const descByLang = {
     en: getRichText(p.Description),
     id: getRichText(p.Description_id),
+    ms: getRichText(p.Description_ms),
     ko: getRichText(p.Description_ko),
     zh: getRichText(p.Description_zh),
     ja: getRichText(p.Description_ja),
+    ar: getRichText(p.Description_ar),
   };
   const photos = getFiles(p.Photos);
   return {
     id: page.id,
     name: nameByLang[langKey] || nameByLang.en || '',
     nameEn: nameByLang.en,
-    nameKo: nameByLang.ko,
     nameId: nameByLang.id,
+    nameMs: nameByLang.ms,
+    nameKo: nameByLang.ko,
     nameZh: nameByLang.zh,
     nameJa: nameByLang.ja,
+    nameAr: nameByLang.ar,
     description: descByLang[langKey] || descByLang.en || '',
     category: getSelectName(p.Category),
     region: getSelectName(p.Region),

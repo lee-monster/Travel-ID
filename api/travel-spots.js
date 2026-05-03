@@ -12,7 +12,7 @@
 //   Returns a server-rendered HTML page for share / OG previews.
 const { notion, SPOTS_DB, spotFromPage } = require('./_lib/notion');
 
-const LANGS = ['en', 'id', 'ko', 'zh', 'ja'];
+const LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
 
 function escHtml(str) {
   if (!str) return '';
@@ -92,7 +92,8 @@ async function renderSpotPage(req, res) {
     const ogDesc = e((spot.description || '').substring(0, 200));
     const spotUrl = 'https://travel-id.kr/spot/' + id + (lang ? '?lang=' + lang : '');
     const appUrl = 'https://travel-id.kr/?spot=' + id + (lang ? '&lang=' + lang : '');
-    const localeMap = { en: 'en_US', id: 'id_ID', ko: 'ko_KR', zh: 'zh_CN', ja: 'ja_JP' };
+    const localeMap = { en: 'en_US', id: 'id_ID', ms: 'ms_MY', ko: 'ko_KR', zh: 'zh_CN', ja: 'ja_JP', ar: 'ar_SA' };
+    const dirAttr = l === 'ar' ? ' dir="rtl"' : '';
     const CAT_EMOJI = {
       beach: '🏖️', temple: '🛕', cultural: '🎭', volcano: '🌋',
       nature: '🌿', diving: '🤿', food: '🍜', cafe: '☕',
@@ -103,7 +104,7 @@ async function renderSpotPage(req, res) {
     const catEmoji = CAT_EMOJI[spot.category] || '📍';
 
     const html = `<!DOCTYPE html>
-<html lang="${l}">
+<html lang="${l}"${dirAttr}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
