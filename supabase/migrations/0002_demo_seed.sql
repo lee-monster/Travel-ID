@@ -3,7 +3,7 @@
 -- Idempotent: ON CONFLICT DO NOTHING on lower(name).
 
 with new_spots as (
-  insert into public.spots (
+  insert into travelid.spots (
     name, category, region, country, latitude, longitude, address,
     halal, prayer_room, entry_fee, best_time_to_visit, local_tips,
     opening_hours, tags, featured, published
@@ -52,11 +52,10 @@ with new_spots as (
   on conflict ((lower(name))) do nothing
   returning id, name
 )
-insert into public.spot_translations (spot_id, lang, name, description)
+insert into travelid.spot_translations (spot_id, lang, name, description)
 select id, t.lang, t.name, t.description
 from new_spots
 join lateral (values
-  -- Borobudur
   ('Borobudur Temple','en','Borobudur Temple','9th-century Mahayana Buddhist monument and the world''s largest Buddhist temple. UNESCO World Heritage. Sunrise over the stupas with Mount Merapi in the distance is the iconic shot.'),
   ('Borobudur Temple','id','Candi Borobudur','Monumen Buddha Mahayana abad ke-9 dan candi Buddha terbesar di dunia. Warisan Dunia UNESCO. Sunrise di atas stupa dengan Gunung Merapi di kejauhan adalah pemandangan ikoniknya.'),
   ('Borobudur Temple','ms','Candi Borobudur','Monumen Buddha Mahayana abad ke-9 dan candi Buddha terbesar di dunia. Tapak Warisan Dunia UNESCO.'),
@@ -65,7 +64,6 @@ join lateral (values
   ('Borobudur Temple','ja','ボロブドゥール寺院','9世紀の大乗仏教遺跡で世界最大の仏教寺院。ユネスコ世界遺産。'),
   ('Borobudur Temple','ar','معبد بوروبودور','نصب بوذي ماهايانا من القرن التاسع وأكبر معبد بوذي في العالم. موقع تراث عالمي لليونسكو.'),
 
-  -- Tanah Lot
   ('Tanah Lot Temple','en','Tanah Lot Temple','Iconic Hindu sea temple perched on a rock formation off Bali''s southwest coast. Famous for sunset photography and kecak dance performances on weekends.'),
   ('Tanah Lot Temple','id','Pura Tanah Lot','Pura laut Hindu ikonik di atas batu karang di pantai barat daya Bali. Terkenal dengan foto sunset dan pertunjukan tari kecak di akhir pekan.'),
   ('Tanah Lot Temple','ms','Tokong Tanah Lot','Tokong laut Hindu ikonik di atas batu karang di pantai barat daya Bali.'),
@@ -74,7 +72,6 @@ join lateral (values
   ('Tanah Lot Temple','ja','タナロット寺院','バリ島南西海岸の岩上にある象徴的なヒンドゥー海神寺院。'),
   ('Tanah Lot Temple','ar','معبد تاناه لوت','معبد هندوسي بحري رمزي على صخرة قبالة الساحل الجنوبي الغربي لبالي.'),
 
-  -- Bromo
   ('Mount Bromo Sunrise','en','Mount Bromo Sunrise','Active volcano in Tengger Caldera, East Java. Pre-dawn jeep convoy to Penanjakan viewpoint for sunrise over a sea of clouds, then walk across the Sea of Sand to the smoking crater rim.'),
   ('Mount Bromo Sunrise','id','Sunrise Gunung Bromo','Gunung berapi aktif di Kaldera Tengger, Jawa Timur. Konvoi jip dini hari ke Penanjakan untuk sunrise di atas lautan awan.'),
   ('Mount Bromo Sunrise','ms','Sunrise Gunung Bromo','Gunung berapi aktif di Kaldera Tengger, Jawa Timur. Konvoi jip dini hari ke Penanjakan untuk matahari terbit di atas lautan awan.'),
@@ -83,7 +80,6 @@ join lateral (values
   ('Mount Bromo Sunrise','ja','ブロモ山サンライズ','東ジャワ・テンゲル・カルデラ内の活火山。夜明け前のジープツアーでペナンジャカン展望台へ。'),
   ('Mount Bromo Sunrise','ar','شروق جبل برومو','بركان نشط في كالديرا تنغر بشرق جاوة. قافلة جيب قبل الفجر إلى نقطة بيناجاكان لمشاهدة الشروق فوق بحر السحب.'),
 
-  -- Petronas
   ('Petronas Twin Towers','en','Petronas Twin Towers','452m twin skyscrapers, KL''s icon. Skybridge on level 41 (170m) and observation deck on 86 (370m); book online to skip queues. Suria KLCC mall + KLCC Park + symphony fountain at the base.'),
   ('Petronas Twin Towers','id','Menara Berkembar Petronas','Menara kembar 452m, ikon KL. Skybridge di lantai 41 (170m) dan dek observasi di lantai 86 (370m).'),
   ('Petronas Twin Towers','ms','Menara Berkembar Petronas','Menara kembar setinggi 452m, ikon KL. Skybridge di tingkat 41 (170m) dan dek pemerhatian di tingkat 86 (370m); tempah dalam talian untuk elak beratur.'),
@@ -92,7 +88,6 @@ join lateral (values
   ('Petronas Twin Towers','ja','ペトロナス・ツインタワー','452mの双子超高層ビル。KLのシンボル。41階のスカイブリッジ(170m)、86階の展望デッキ(370m)。'),
   ('Petronas Twin Towers','ar','أبراج بتروناس التوأم','برجان توأمان بارتفاع 452 متر، رمز كوالالمبور. جسر السماء في الطابق 41 (170م) ومنصة المراقبة في الطابق 86 (370م).'),
 
-  -- George Town
   ('George Town Heritage (Penang)','en','George Town Heritage (Penang)','UNESCO-listed colonial trading port. Cheong Fatt Tze (Blue Mansion), Khoo Kongsi clan house, Ernest Zacharevic street art murals, Armenian Street, hawker food at Lebuh Chulia.'),
   ('George Town Heritage (Penang)','id','Pusaka George Town (Penang)','Pelabuhan dagang kolonial warisan UNESCO. Cheong Fatt Tze, Khoo Kongsi, mural seni jalanan Ernest Zacharevic, Armenian Street.'),
   ('George Town Heritage (Penang)','ms','Warisan George Town (Pulau Pinang)','Pelabuhan dagang kolonial warisan UNESCO. Cheong Fatt Tze (Blue Mansion), rumah persatuan Khoo Kongsi, mural seni jalanan Ernest Zacharevic.'),
@@ -101,7 +96,6 @@ join lateral (values
   ('George Town Heritage (Penang)','ja','ジョージタウン世界遺産 (ペナン)','ユネスコ世界遺産の植民地貿易港。チョン・ファット・ツェー邸、クーコンシー一族集会所、ストリートアート。'),
   ('George Town Heritage (Penang)','ar','تراث جورج تاون (بينانغ)','ميناء تجاري استعماري على قائمة اليونسكو. قصر تشونغ فات تسي (البيت الأزرق)، بيت عشيرة كو كونغسي، جداريات إيرنست زاتشريفيتش.'),
 
-  -- Kinabalu
   ('Mount Kinabalu','en','Mount Kinabalu','Sabah''s 4,095m granite peak — Borneo''s highest mountain and a UNESCO World Heritage site. The 2-day Summit Trail is non-technical but tough.'),
   ('Mount Kinabalu','id','Gunung Kinabalu','Puncak granit setinggi 4.095m di Sabah — gunung tertinggi Borneo dan Warisan Dunia UNESCO.'),
   ('Mount Kinabalu','ms','Gunung Kinabalu','Puncak granit setinggi 4,095m di Sabah — gunung tertinggi Borneo dan Tapak Warisan Dunia UNESCO. Laluan Puncak 2 hari tidak teknikal tapi mencabar.'),

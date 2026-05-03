@@ -355,8 +355,11 @@
         console.error('Supabase not configured; auth disabled');
         return;
       }
+      // Travel-ID co-tenants the TravelKo Supabase project; all our tables
+      // live in the `travelid` schema (overridable via map-config response).
       window._taSupa = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
-        auth: { persistSession: true, autoRefreshToken: true }
+        auth: { persistSession: true, autoRefreshToken: true },
+        db: { schema: cfg.supabaseSchema || 'travelid' },
       });
 
       // Restore existing session if present

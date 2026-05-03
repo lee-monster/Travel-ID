@@ -25,8 +25,13 @@ if (!NOTION_TOKEN || !SUPA_URL || !SUPA_KEY) {
   process.exit(1);
 }
 
+const SCHEMA = process.env.SUPABASE_SCHEMA || 'travelid';
+
 const notion = new Client({ auth: NOTION_TOKEN });
-const supa = createClient(SUPA_URL, SUPA_KEY, { auth: { autoRefreshToken: false, persistSession: false } });
+const supa = createClient(SUPA_URL, SUPA_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+  db: { schema: SCHEMA },
+});
 
 const LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
 

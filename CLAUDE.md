@@ -70,16 +70,33 @@ Two audiences with subtly different UX:
 | Variable | Purpose | Notes |
 |---|---|---|
 | `PUBLIC_SITE_URL` | Canonical origin | `https://travel-id.vercel.app` (placeholder) |
-| `SUPABASE_URL` | Supabase project URL | from Project → Settings → API |
-| `SUPABASE_ANON_KEY` | Public anon key | safe to expose; RLS protects rows |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only admin key | NEVER expose to browser |
+| `SUPABASE_URL` | Supabase project URL | **Reused** from TravelKo (co-tenant) |
+| `SUPABASE_ANON_KEY` | Public anon key | **Reused**; safe to expose, RLS protects rows |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only admin key | **Reused**; NEVER expose to browser |
+| `SUPABASE_SCHEMA` | Postgres schema for our tables | `travelid` (default) |
 | `GOOGLE_MAPS_API_KEY` | Frontend Maps JS key | restrict to HTTP referrer |
 | `GOOGLE_GEOCODING_API_KEY` | Server geocoding/places key | restrict by IP |
-| `GOOGLE_CLIENT_ID` | OAuth client id (Google Identity Services button) | also paste in Supabase Auth → Providers → Google |
+| `GOOGLE_CLIENT_ID` | OAuth client id (Google Identity Services button) | reuse TravelKo's if same Google project |
 | `GEMINI_API_KEY` | AI planner | https://aistudio.google.com/app/apikey |
 
+## Supabase — co-tenant with TravelKo
+To stay within Supabase's 2-project free-tier limit, Travel-ID and TravelKo
+share a single Supabase project. Isolation lives at the **PostgreSQL schema**
+level: TravelKo keeps `public.*`, Travel-ID lives in `travelid.*`. The
+`auth.users` table is shared (single sign-in pool — a user signed into either
+app shares the auth identity).
+
+The Supabase JS client is initialized with `db: { schema: 'travelid' }`, which
+makes every `from('spots')` call resolve to `travelid.spots` automatically.
+The schema name flows from `SUPABASE_SCHEMA` env var (server) and from the
+`/api/map-config` response (browser).
+
+**Required Supabase setting**: Project Settings → API → Exposed schemas must
+include `travelid` (alongside `public`). Without this, PostgREST returns 404
+for every Travel-ID table.
+
 ## Supabase Schema
-See `supabase/migrations/0001_init.sql`. Key tables:
+See `supabase/migrations/0001_init.sql`. Key tables (all in `travelid` schema):
 - `profiles` — extends `auth.users` with `display_name`, `avatar_url`,
   `preferred_lang`, `planner_usage` (jsonb, last 7 days)
 - `spots` — main catalog. `country` ('ID'|'MY'), `region`, halal/prayer/

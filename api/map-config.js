@@ -11,6 +11,7 @@ module.exports = (req, res) => {
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
     supabaseUrl: process.env.SUPABASE_URL || '',
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
+    supabaseSchema: process.env.SUPABASE_SCHEMA || 'travelid',
     siteUrl: getSiteUrl(req),
   });
 };

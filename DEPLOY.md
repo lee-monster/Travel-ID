@@ -5,25 +5,35 @@ Step-by-step bootstrap for a fresh deployment. Allow ~30-45 minutes the first ti
 ## 1. GitHub repo (already done)
 Repo lives at `https://github.com/lee-monster/Travel-ID`. Vercel pulls from `main`.
 
-## 2. Supabase project
-1. Sign up / sign in at <https://supabase.com/dashboard> → **New Project**.
-   Region: pick `Singapore` (closest to ID/MY users + low Vercel egress latency).
-   Pricing: Free tier is enough to start (500MB DB, 50k MAU).
-2. Once provisioned (~2 min), go to **Settings → API**:
-   - Copy `Project URL` → `SUPABASE_URL`
-   - Copy `anon public` key → `SUPABASE_ANON_KEY`
-   - Copy `service_role` key → `SUPABASE_SERVICE_ROLE_KEY` (keep secret)
-3. **Run migrations**. Open **SQL Editor → New query** and paste each file in
-   order:
+## 2. Supabase — co-tenant with TravelKo
+Travel-ID shares the existing TravelKo Supabase project to stay within the
+free-tier 2-project limit. All Travel-ID tables live in a dedicated `travelid`
+PostgreSQL schema; TravelKo's `public.*` tables remain untouched. The
+`auth.users` table is shared (single sign-in pool).
+
+1. Open the existing **TravelKo Supabase project**.
+2. Reuse credentials from **Settings → API**:
+   - `Project URL` → `SUPABASE_URL`
+   - `anon public` key → `SUPABASE_ANON_KEY`
+   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY` (keep secret)
+3. **Run Travel-ID migrations**. Open **SQL Editor → New query** and paste each
+   file in order:
    - Paste `supabase/migrations/0001_init.sql` → Run
-   - Paste `supabase/migrations/0002_demo_seed.sql` → Run (loads 6 demo spots)
+     (creates `travelid` schema + all tables + RLS + trigger + backfills profiles
+     for any existing TravelKo users)
+   - Paste `supabase/migrations/0002_demo_seed.sql` → Run (6 demo spots)
 
-   Verify in **Table Editor**: `spots` should have 6 rows, `spot_translations` ~42.
+   Verify in **Table Editor → travelid → spots**: should have 6 rows;
+   `travelid.spot_translations` ~42 rows.
 
-4. **Enable Google as auth provider**: **Authentication → Providers → Google** →
-   toggle ON. Paste `Client ID` (and `Client Secret` from GCP). The redirect URL
-   shown there (e.g. `https://<project>.supabase.co/auth/v1/callback`) **must be
-   added to your Google OAuth Authorized redirect URIs** in step 3 below.
+4. **Expose the schema**: **Settings → API → Exposed schemas** → add `travelid`
+   alongside `public` → **Save**. (PostgREST refuses to query schemas that
+   aren't explicitly exposed.)
+
+5. **Google auth provider** is likely already configured for TravelKo —
+   reuse the same setup. The Supabase callback URL in **Authentication →
+   Providers → Google** must already be in your Google Cloud OAuth Authorized
+   redirect URIs from the TravelKo deployment.
 
 ## 3. Google Cloud project
 1. Create a project at <https://console.cloud.google.com/>
@@ -54,12 +64,13 @@ following (Production, Preview, Development all checked):
 
 ```
 PUBLIC_SITE_URL              https://travel-id.vercel.app
-SUPABASE_URL                 (step 2.2)
-SUPABASE_ANON_KEY            (step 2.2)
-SUPABASE_SERVICE_ROLE_KEY    (step 2.2)
+SUPABASE_URL                 (step 2.2 - same as TravelKo)
+SUPABASE_ANON_KEY            (step 2.2 - same as TravelKo)
+SUPABASE_SERVICE_ROLE_KEY    (step 2.2 - same as TravelKo)
+SUPABASE_SCHEMA              travelid
 GOOGLE_MAPS_API_KEY          (step 3.3 - frontend key)
 GOOGLE_GEOCODING_API_KEY     (step 3.3 - server key)
-GOOGLE_CLIENT_ID             (step 3.4)
+GOOGLE_CLIENT_ID             (step 3.4 - reuse TravelKo's if same Google project)
 GEMINI_API_KEY               (step 4)
 ```
 
