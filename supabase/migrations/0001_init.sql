@@ -197,7 +197,7 @@ create index if not exists events_session_idx
   on travelid.events (session_id, occurred_at desc) where session_id is not null;
 
 create or replace function travelid.events_no_update_delete()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql security definer set search_path = travelid, public as $$
 begin
   raise exception 'travelid.events table is append-only';
 end;
@@ -215,7 +215,7 @@ create trigger events_no_delete before delete on travelid.events
 -- updated_at maintenance
 -- ─────────────────────────────────────────────────────────
 create or replace function travelid.touch_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql security definer set search_path = travelid, public as $$
 begin
   new.updated_at = now();
   return new;
@@ -325,7 +325,7 @@ create or replace function travelid.log_event(
   p_ip_country text default null,
   p_ua_device text default null,
   p_lang text default null
-) returns uuid language plpgsql security definer as $$
+) returns uuid language plpgsql security definer set search_path = travelid, public as $$
 declare
   v_id uuid;
 begin
