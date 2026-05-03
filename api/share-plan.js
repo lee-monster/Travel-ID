@@ -2,7 +2,7 @@
 //   POST: save a plan, return ShareId
 //   GET ?id=<shareId>: retrieve a shared plan
 const crypto = require('crypto');
-const { notion } = require('./_lib/notion');
+const { notion, getSiteUrl } = require('./_lib/notion');
 const { setCors, getUserFromRequest } = require('./_lib/auth');
 
 const SHARED_DB = process.env.NOTION_DB_SHARED_PLANS || '43e9ab1e470d4894a708e8a6a2f513d5';
@@ -90,7 +90,7 @@ async function handlePost(req, res) {
       return res.status(200).json({
         success: true,
         shareId,
-        shareUrl: 'https://travel-id.kr/plan/' + shareId,
+        shareUrl: getSiteUrl(req) + '/plan/' + shareId,
       });
     } catch (err) {
       if (/duplicate|already exists/i.test(err.message)) continue;

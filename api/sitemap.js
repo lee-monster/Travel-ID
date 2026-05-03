@@ -1,8 +1,7 @@
 // Travel-ID sitemap generator (Notion-backed).
 // Lists base/lang URLs and one entry per published spot × language.
-const { notion, SPOTS_DB } = require('./_lib/notion');
+const { notion, SPOTS_DB, getSiteUrl } = require('./_lib/notion');
 
-const BASE_URL = 'https://travel-id.kr';
 const LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
 const CATEGORIES = [
   'beach','temple','cultural','volcano','nature','diving',
@@ -21,12 +20,11 @@ function escXml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function langUrl(path, lang) {
-  if (path.indexOf('?') !== -1) return BASE_URL + path + '&lang=' + lang;
-  return BASE_URL + path + '?lang=' + lang;
-}
-
 module.exports = async function handler(req, res) {
+  const BASE_URL = getSiteUrl(req);
+  const langUrl = (path, lang) => path.indexOf('?') !== -1
+    ? BASE_URL + path + '&lang=' + lang
+    : BASE_URL + path + '?lang=' + lang;
   const now = new Date().toISOString().split('T')[0];
 
   const basePaths = [{ path: '/', priority: '1.0', changefreq: 'daily' }];

@@ -10,7 +10,7 @@
 //
 // GET /api/travel-spots?render=page&id=...&lang=...
 //   Returns a server-rendered HTML page for share / OG previews.
-const { notion, SPOTS_DB, spotFromPage } = require('./_lib/notion');
+const { notion, SPOTS_DB, spotFromPage, getSiteUrl } = require('./_lib/notion');
 
 const LANGS = ['en', 'id', 'ms', 'ko', 'zh', 'ja', 'ar'];
 
@@ -81,17 +81,18 @@ async function renderSpotPage(req, res) {
   if (!id) return res.status(400).send('Missing spot id');
   const l = LANGS.indexOf(lang) !== -1 ? lang : 'en';
 
+  const SITE = getSiteUrl(req);
   try {
     const page = await notion().pages.retrieve({ page_id: id });
     const spot = spotFromPage(page, l);
-    if (!spot.name) return res.redirect(302, 'https://travel-id.kr/');
+    if (!spot.name) return res.redirect(302, SITE + '/');
 
     const e = escHtml;
-    const ogImage = spot.coverImage || (spot.photos[0] || 'https://travel-id.kr/images/splash.png');
+    const ogImage = spot.coverImage || (spot.photos[0] || SITE + '/images/splash.png');
     const ogTitle = e(spot.name + ' — Travel-ID');
     const ogDesc = e((spot.description || '').substring(0, 200));
-    const spotUrl = 'https://travel-id.kr/spot/' + id + (lang ? '?lang=' + lang : '');
-    const appUrl = 'https://travel-id.kr/?spot=' + id + (lang ? '&lang=' + lang : '');
+    const spotUrl = SITE + '/spot/' + id + (lang ? '?lang=' + lang : '');
+    const appUrl = SITE + '/?spot=' + id + (lang ? '&lang=' + lang : '');
     const localeMap = { en: 'en_US', id: 'id_ID', ms: 'ms_MY', ko: 'ko_KR', zh: 'zh_CN', ja: 'ja_JP', ar: 'ar_SA' };
     const dirAttr = l === 'ar' ? ' dir="rtl"' : '';
     const CAT_EMOJI = {
@@ -145,7 +146,7 @@ ${spot.coverImage ? `<img src="${e(spot.coverImage)}" alt="${e(spot.name)}">` : 
     return res.status(200).send(html);
   } catch (err) {
     console.error('renderSpotPage error:', err);
-    return res.redirect(302, 'https://travel-id.kr/');
+    return res.redirect(302, SITE + '/');
   }
 }
 

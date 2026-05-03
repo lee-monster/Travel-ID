@@ -251,7 +251,8 @@
   function updateSeoMeta(lang) {
     var t = (typeof translations !== 'undefined') ? translations : {};
     var langData = t[lang] || t['en'] || {};
-    var baseUrl = 'https://travel-id.kr';
+    // siteUrl is delivered by /api/map-config; fall back to current origin while config is in flight.
+    var baseUrl = (state.mapConfig && state.mapConfig.siteUrl) || (window.location.origin || 'https://travel-id.vercel.app');
 
     // html lang attribute
     document.documentElement.lang = lang;
@@ -982,7 +983,8 @@
       actionsHtml += '<a href="' + escapeAttr(spot.googleMapLink) + '" target="_blank" rel="noopener" class="ta-detail-google">' + t('app.openGoogle') + '</a>';
     }
     // Share buttons
-    var shareUrl = 'https://travel-id.kr/spot/' + spot.id + '?lang=' + state.lang;
+    var siteOrigin = (state.mapConfig && state.mapConfig.siteUrl) || window.location.origin;
+    var shareUrl = siteOrigin + '/spot/' + spot.id + '?lang=' + state.lang;
     var shareText = spot.name + ' — Travel-ID';
     actionsHtml += '<div class="ta-spot-share">' +
       '<button class="ta-share-spot-btn ta-share-spot-copy" onclick="taShareSpot(\'copy\')" title="Copy Link">🔗</button>' +
@@ -1058,6 +1060,8 @@
     fetchClientConfig()
       .then(function(data) {
         state.mapConfig = data;
+        // Re-apply SEO meta now that we know the canonical site URL.
+        if (data.siteUrl) updateSeoMeta(state.lang);
 
         // Store Google Client ID for auth
         if (data.googleClientId) {

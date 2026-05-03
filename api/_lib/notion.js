@@ -184,6 +184,15 @@ async function touchUserLogin(userId) {
   } catch (_) {}
 }
 
+// Resolve the canonical public site URL from a request.
+// Order: PUBLIC_SITE_URL env > x-forwarded-host > request host > vercel.app fallback.
+function getSiteUrl(req) {
+  if (process.env.PUBLIC_SITE_URL) return process.env.PUBLIC_SITE_URL.replace(/\/$/, '');
+  const host = (req && req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'travel-id.vercel.app';
+  const proto = (req && req.headers && req.headers['x-forwarded-proto']) || 'https';
+  return proto + '://' + host;
+}
+
 module.exports = {
   notion,
   SPOTS_DB,
@@ -195,4 +204,5 @@ module.exports = {
   createUser,
   updateUserBookmarks,
   touchUserLogin,
+  getSiteUrl,
 };
